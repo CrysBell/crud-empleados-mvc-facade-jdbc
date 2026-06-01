@@ -77,24 +77,21 @@
 			</div>
 			
 			<div>
-				<label for="telefonos">Númeos de Telefono:</label>
+				<label for="telefonos">Números de Telefono:</label>
 				<input type="text" id="telefonos" name="telefonos"
 					placeholder="Uno o varios separados ;"/>
 			</div>
 			
 			<br>
 			<br>
-			<input type="submit" value="Actualizar">
-
-
-
-
-
-
 			
+			<input type="submit" value="Enviar">
+			
+		
 		</form>
 
 	</fieldset>
+	
 
 
 </body>

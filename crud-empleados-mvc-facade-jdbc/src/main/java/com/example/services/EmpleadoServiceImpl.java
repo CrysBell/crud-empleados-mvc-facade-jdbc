@@ -68,4 +68,24 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 		return empleados;
 	}
 
+	@Override
+	public void altaEmpleado (Empleado empleado, 
+			List<String> emails, 
+			List<String> nTelefonos) throws SQLException {
+		// TODO Auto-generated method stub
+		 try (DBConexion dbConexion = new DBConexion("root", "Temp2026"); 
+				 Connection connection = dbConexion.getConnection()) {
+			 
+			 dbConexion.altaEmpleado(empleado, emails, nTelefonos, connection);
+			 
+			 System.out.println("Empleado dado de alta correctamente");
+			
+		} catch (Exception e) {
+			
+		}
+	}
+	
 }
+	
+
+

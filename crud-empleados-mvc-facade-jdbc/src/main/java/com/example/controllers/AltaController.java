@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -17,6 +18,8 @@ import com.example.models.Empleado;
 import com.example.models.Genero;
 import com.example.services.DepartamentoService;
 import com.example.services.DepartamentoServiceImpl;
+import com.example.services.EmpleadoService;
+import com.example.services.EmpleadoServiceImpl;
 
 /**
  * Servlet implementation class AltaController
@@ -65,18 +68,20 @@ public class AltaController extends HttpServlet {
 		
 		//Aqui se reciben los datos procedentes de los controles del formulario
 		//Tener en cuenta que toda la información llega en formato String
+		
 		String nombre = request.getParameter("nombre");
 		String primerApellido = request.getParameter("primerApellido");
-		String segundoApellido = request.getParameter("segundoApellido") == null ? "" : request.getParameter("segundoApellido");
+		String segundoApellido = request.getParameter("segundoApellido") == null ? 
+				"" : request.getParameter("segundoApellido");
 		LocalDate fechaAlta = LocalDate.parse(request.getParameter("fechaAlta"));
 		Genero genero = Genero.valueOf(request.getParameter("genero"));
-		BigDecimal salario = BigDecimal.valueOf(Double.parseDouble(request.getParameter("salario")));
+		BigDecimal salario = BigDecimal.valueOf(Double.valueOf(request.getParameter("salario")));
 		
 		int departamentos_id = Integer.parseInt(request.getParameter("departamento")) ;
 		
 		
 		
-		
+		//Tener en cuenta que los correos y telefonos no son requeridos
 		List<String> direccionesCorreos = null;
 		
 		
@@ -117,8 +122,25 @@ public class AltaController extends HttpServlet {
 				.departamentos_id(departamentos_id)
 				.build();
 				
+		//Aquí se deberia llamar al servicio para que se encargue de insertar el uevo empleado en la base de datos
+		EmpleadoService empleadoService = new EmpleadoServiceImpl();
+
+		try {
+		    empleadoService.altaEmpleado(
+		            empleado,
+		            direccionesCorreos,
+		            numerosDeTelefono);
+
+		} catch (SQLException e) {
+		    // TODO Auto-generated catch block
+		    e.printStackTrace();
+		}
 		
 		
+		List<Empleado> empleados = empleadoService.getEmpleados();
+		request.setAttribute("empleados", empleados);
+		
+		request.getRequestDispatcher("views/listadoEmpleados.jsp").forward(request, response);
 		
 		
 		//comprobando
