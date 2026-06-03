@@ -1,3 +1,4 @@
+<%@page import="java.math.RoundingMode"%>
 <%@page import="com.example.models.Empleado"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -90,7 +91,7 @@
                     <td><%= empleado.segundoApellido() %></td>
                     <td><%= empleado.fechaAlta() %></td>
                     <td><%= empleado.genero() %></td>
-                    <td><%= String.format("%.2f", empleado.salario()) %></td>
+                    <td><%= empleado.salario().setScale(2, RoundingMode.HALF_UP ) %></td>
                 </tr>
                <%
 			 }
