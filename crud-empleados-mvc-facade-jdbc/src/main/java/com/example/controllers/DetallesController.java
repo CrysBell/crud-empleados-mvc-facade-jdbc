@@ -6,9 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
 
 import com.example.models.Detalle;
+import com.example.models.Empleado;
 import com.example.services.EmpleadoService;
 import com.example.services.EmpleadoServiceImpl;
 
@@ -43,7 +45,31 @@ public class DetallesController extends HttpServlet {
 		//Conectar con la capa DAO
 		EmpleadoService empleadoService = new EmpleadoServiceImpl();
 		
+		//Recuperamos todos los empleados y lo filtramos para obtener el empleado cuyo id se ha recibido
+		
+		List<Empleado> empleados = empleadoService.getEmpleados();
+		
+		Empleado empleado = empleados.stream()
+				.filter ( e->e.id() == idEmpleado )
+				.findFirst()
+				.orElseThrow( () -> new RuntimeException("Empleado no encontrado") );
+		
+		request.setAttribute("empleado", empleado);
+		
 		Detalle detalles = empleadoService.detalles(idEmpleado);
+		
+		//Mostrar la vista detallesEmpleados.jsp
+		
+		request.setAttribute("detalles", detalles);
+		
+		request.getRequestDispatcher("views/detallesEmpleado.jsp")
+			.forward(request, response);
+		
+	}
+
+	private Object findFirst() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/**
