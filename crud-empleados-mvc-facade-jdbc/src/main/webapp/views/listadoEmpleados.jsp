@@ -56,7 +56,15 @@
         background-color: #eaf4ff;
         transition: 0.3s;
     }
-
+	a{
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
 </style>
 </head>
 <body>
@@ -78,6 +86,7 @@
                 <th>Fecha Alta</th>
                 <th>Genero</th>
                 <th>Salario</th>
+                <th></th>
             </tr>
 		
 		</thead>
@@ -92,10 +101,12 @@
                     <td><%= empleado.fechaAlta() %></td>
                     <td><%= empleado.genero() %></td>
                     <td><%= empleado.salario().setScale(2, RoundingMode.HALF_UP ) %></td>
+                    <td> <a href="DetallesController?idEmpleado=<%=empleado.id() %>"> Detalles </a> </td>
                 </tr>
                <%
 			 }
 			%>
+			
 		</tbody>
 	</table>
 </body>

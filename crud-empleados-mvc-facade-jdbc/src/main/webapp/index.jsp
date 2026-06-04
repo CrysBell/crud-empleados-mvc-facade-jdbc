@@ -42,6 +42,7 @@
         transition: 0.3s;
         color: white;
     }
+    
 </style>
 </head>
 <body>

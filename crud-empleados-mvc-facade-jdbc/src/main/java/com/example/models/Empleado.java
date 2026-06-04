@@ -14,7 +14,7 @@ public record Empleado(
 		LocalDate fechaAlta,
 		Genero genero,
 		BigDecimal salario,
-		int departamentos_id) {
+		int departamentos_id ) {
 
 	
 }

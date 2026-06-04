@@ -93,6 +93,7 @@ public class DBConexion implements AutoCloseable {
 		return rs;
 	}
 
+	
 	// metodo que inserta empleado y sus correos y telefonos en la base de datos
 	public void altaEmpleado(Empleado empleado, 
 			List<String> dirCorreos,
@@ -221,5 +222,33 @@ public class DBConexion implements AutoCloseable {
 		
 		
 		
+	}
+	
+	
+	/*Metodo que recupera los detalles (Nombre del departamento, los telefonos y los correos cuyo id se recibe como parámetro*/
+	public ResultSet detallesEmpleado(int idEmpleado, Connection connection) {
+		
+		ResultSet rs = null;
+		String query = "select dep.nombre nombreDpto, tel.numero numeroTelefono, "
+				+ "cor.email email\r\n"
+				+ "from empleados emp left join departamentos dep on \r\n"
+				+ "emp.departamentos_id = dep.id left join telefonos tel on \r\n"
+				+ "emp.id = tel.empleados_id left join correos cor on\r\n"
+				+ "emp.id = cor.empleados_id\r\n"
+				+ "where emp.id = ?";
+		PreparedStatement stmt1 = null;
+		
+		try {
+			stmt1 = connection.prepareStatement(query, 
+					ResultSet.TYPE_SCROLL_INSENSITIVE, 
+					ResultSet.CONCUR_UPDATABLE);
+			
+			stmt1.setInt(1, idEmpleado);
+			rs = stmt1.executeQuery();
+		} catch (SQLException e) {
+			LOG.severe("Error recuperando detalles del empleado" + e.getMessage());
+			e.printStackTrace();
+		}
+		return rs;
 	}
 }
