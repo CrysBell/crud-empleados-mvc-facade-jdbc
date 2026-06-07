@@ -35,17 +35,17 @@ public class DetallesController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//Recibir el ID del empleado que es el parámetro que me envian con la petición (requets)
+		//Recibir el ID del empleado que es el parámetro que me envian con la petición (requets), añadimos comentario
 			
 		int idEmpleado = Integer.parseInt(request.getParameter("idEmpleado"));
 		
-		//Podriamos comprobar si se esta recibiendo correctamente el ID mostrandolo en la consola
+		//Podriamos comprobar si se esta recibiendo correctamente el ID mostrandolo en la consola, añadimos comentario
 		LOG.info("Id Empleado recibido: " + idEmpleado);
 		
 		//Conectar con la capa DAO
 		EmpleadoService empleadoService = new EmpleadoServiceImpl();
 		
-		//Recuperamos todos los empleados y lo filtramos para obtener el empleado cuyo id se ha recibido
+		//Recuperamos todos los empleados y lo filtramos para obtener el empleado cuyo id se ha recibido , añadimos comentario
 		
 		List<Empleado> empleados = empleadoService.getEmpleados();
 		

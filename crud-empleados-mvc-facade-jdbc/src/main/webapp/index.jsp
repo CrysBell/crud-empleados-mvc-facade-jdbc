@@ -22,7 +22,7 @@
         width: 250px;
         border-collapse: collapse;
         color:   #3498db;
-        background-color: white;
+        background-color: peach;
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         border-radius: 10px;
         overflow: hidden;
@@ -49,7 +49,7 @@
 	<h1>Bienvenido a la aplicación de gestión de empleados</h1>
    
     <div>
-   		<a href="MainController">Mostrar lista de empleados</a>
+   		<a href="MainController">Visualizar lista de empleados</a>
     </div>
 </body>
 </html>
