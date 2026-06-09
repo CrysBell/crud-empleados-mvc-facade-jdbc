@@ -19,11 +19,10 @@ import com.example.services.EmpleadoServiceImpl;
  */
 @WebServlet("/MainController")
 public class MainController extends HttpServlet {
-	
-	
-	private static final long serialVersionUID = 1L;  
+	private static final long serialVersionUID = 1L;
 	
 	private static final Logger LOG = Logger.getLogger("MainController");
+       
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -31,26 +30,30 @@ public class MainController extends HttpServlet {
         super();
         // TODO Auto-generated constructor stub
     }
+
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//Conectar con la capa de servicios
+		
+		// Conectar con la capa de servicios
+		
 		EmpleadoService empleadoService = new EmpleadoServiceImpl();
 		
 		List<Empleado> empleados = empleadoService.getEmpleados();
 		
-		//El listado hay que enviarlo a la vista como atributo para que sea renderizado
+		// El listado de empleados hay que enviarlo como atributo a la vista 
+		// para que sea renderizada
 		request.setAttribute("empleados", empleados);
 		
 		request.getRequestDispatcher("views/listadoEmpleados.jsp").forward(request, response);
 		
 	}
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 	}
 
 }

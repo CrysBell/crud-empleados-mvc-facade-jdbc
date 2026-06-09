@@ -19,6 +19,7 @@ import com.example.services.EmpleadoServiceImpl;
  */
 @WebServlet("/DetallesController")
 public class DetallesController extends HttpServlet {
+	
 	private static final long serialVersionUID = 1L;
 	
 	private static final Logger LOG = Logger.getLogger("DetallesController");
@@ -35,48 +36,52 @@ public class DetallesController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		//Recibir el ID del empleado que es el parámetro que me envian con la petición (requets), añadimos comentario
-			
+		
+		// Recibir el idEmpleado, que es el parametro que me envian con la peticion 
+		// (request)
+		
 		int idEmpleado = Integer.parseInt(request.getParameter("idEmpleado"));
 		
-		//Podriamos comprobar si se esta recibiendo correctamente el ID mostrandolo en la consola, añadimos comentario
+		// Podriamos comprobar si se esta recibiendo correctamente el idEmpleado
+		// mostrandolo en la consola
+		
+		// System.out.println("Id Empleado recibido: " + idEmpleado);
+		
 		LOG.info("Id Empleado recibido: " + idEmpleado);
 		
-		//Conectar con la capa DAO
+		// Conectar con la capa de servicio para recuperar los detalles del 
+		// empleado
+		
 		EmpleadoService empleadoService = new EmpleadoServiceImpl();
 		
-		//Recuperamos todos los empleados y lo filtramos para obtener el empleado cuyo id se ha recibido , añadimos comentario
+		/* Recuperamos todos los empleados y lo filtramos para obtener el 
+		 * empleado cuyo id se ha recibido */
 		
 		List<Empleado> empleados = empleadoService.getEmpleados();
 		
 		Empleado empleado = empleados.stream()
-				.filter ( e->e.id() == idEmpleado )
+				.filter(e -> e.id() == idEmpleado)
 				.findFirst()
-				.orElseThrow( () -> new RuntimeException("Empleado no encontrado") );
+				.orElseThrow(() -> 
+				         new RuntimeException("Empleado no encontrado"));
 		
 		request.setAttribute("empleado", empleado);
 		
 		Detalle detalles = empleadoService.detalles(idEmpleado);
 		
-		//Mostrar la vista detallesEmpleados.jsp
+		// Mostrar la vista detallesEmpleado.jsp	
 		
 		request.setAttribute("detalles", detalles);
 		
 		request.getRequestDispatcher("views/detallesEmpleado.jsp")
-			.forward(request, response);
+				.forward(request, response);
 		
-	}
-
-	private Object findFirst() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
 	}
 
 }

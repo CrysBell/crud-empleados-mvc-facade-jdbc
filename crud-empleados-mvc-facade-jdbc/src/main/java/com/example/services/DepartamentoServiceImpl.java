@@ -19,7 +19,7 @@ public class DepartamentoServiceImpl implements DepartamentoService{
 		
 		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
 				
-			Connection connection = dbConexion. getConnection()){
+			Connection connection = dbConexion. getConexion()){
 			
 				ResultSet rs = dbConexion.getDptos(connection);
 				

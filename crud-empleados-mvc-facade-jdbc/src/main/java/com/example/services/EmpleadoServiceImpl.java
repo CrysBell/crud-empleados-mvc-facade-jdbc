@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -13,45 +14,44 @@ import java.util.logging.Logger;
 import com.example.dao.DBConexion;
 import com.example.models.Detalle;
 import com.example.models.Empleado;
+import com.example.models.EmpleadoUpdate;
 import com.example.models.Genero;
 
-public class EmpleadoServiceImpl implements EmpleadoService{
+public class EmpleadoServiceImpl implements EmpleadoService {
 	
 	private static final Logger LOG = Logger.getLogger("EmpleadoServiceImpl");
 
 	@Override
-	public boolean isConnectionOk() throws SQLException {
+	public boolean isConnectionOk() throws Exception {
 		
-		DBConexion dbConexion = new DBConexion("root", "Temp2026");
+		
 		
 		boolean connectionOk = false;
-		Connection connection = null;
 		
-		try {
-			connection = dbConexion.getConnection();
-			if(connection != null)
-				connectionOk = true;
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+			  Connection connection = dbConexion.getConexion())  {
 			
+			if (connection != null) 
+				connectionOk = true;
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} finally {
-			if (connection != null)
-				connection.close();
-		}
-		 
+		} 
+		
 		return connectionOk;
 	}
 
 	@Override
-	public List<Empleado> getEmpleados(){
+	public List<Empleado> getEmpleados() {
 		
 		List<Empleado> empleados = new ArrayList<Empleado>();
+		
 		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
-				Connection connection = dbConexion.getConnection()) {
+				Connection connection = dbConexion.getConexion()) {
 			
 			ResultSet rs = dbConexion.getEmpleados(connection);
-			
+		
 			while (rs.next()) {
 				
 				empleados.add(
@@ -67,77 +67,160 @@ public class EmpleadoServiceImpl implements EmpleadoService{
 						.build()
 						);
 			}
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
-	
+		
+		
+		
 		return empleados;
 	}
 
 	@Override
-	public void altaEmpleado (Empleado empleado, 
-			List<String> emails, 
-			List<String> nTelefonos) throws SQLException {
-		// TODO Auto-generated method stub
-		 try (DBConexion dbConexion = new DBConexion("root", "Temp2026"); 
-				 Connection connection = dbConexion.getConnection()) {
-			 
-			 dbConexion.altaEmpleado(empleado, emails, nTelefonos, connection);
-			 
-			 System.out.println("Empleado dado de alta correctamente");
-			
+	public void altaEmpleado(Empleado empleado, 
+			List<String> emails, List<String> nTelefonos) throws SQLException {
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
+			dbConexion.altaEmpleado(empleado, emails, nTelefonos, connection);
 		} catch (Exception e) {
-			
+			e.printStackTrace();
 		}
 	}
 
 	@Override
 	public Detalle detalles(int idEmpleado) {
-//
+		
 		Detalle detalles = null;
 		
-		try (DBConexion dbConexion = new DBConexion ("root", "Temp2026"); 
-				Connection connection = dbConexion.getConnection()) {
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
 			
 			ResultSet rs = dbConexion.detallesEmpleado(idEmpleado, connection);
 			
-			//Para recuperar el nombre del departamento tengo que recorrer el RS
-			String nombreDto = null;
+			// Para recuperar el nombre del Dpto
+			String nombreDpto = null;
 			
-			//Para no recorrer la lista y solo leer el primer elemento
 			if (rs.next())
-				nombreDto = rs.getString("nombreDpto");
-				
-			//Para recuperar la lista de números de telefono tambien tengo que recorrer el RS pero de tipo conjunto
-			Set<String> numerosTelefono = new HashSet<String>();
+				nombreDpto = rs.getString("nombreDpto");
 			
+			// Para recuperar la lista de numeros de Telefono
+			Set<String> numerosTelefono = new HashSet<String>();
+		
 			rs.beforeFirst();
 			
 			while (rs.next()) {
 				numerosTelefono.add(rs.getString("numeroTelefono"));
 			}
 			
-			//Para recuperar la lista de direcciones de correo tengo que recorrer el RS
+			
+			// Para recuperar la lista de direcciones de correos
 			Set<String> emails = new HashSet<String>();
 			
 			rs.beforeFirst();
+			
 			while (rs.next()) {
 				emails.add(rs.getString("email"));
 			}
 			
-			detalles = new Detalle(nombreDto,
-					numerosTelefono,
+			detalles = new Detalle(nombreDpto,
+					numerosTelefono, 
 					emails);
-			LOG.info("Detalle recuperado:" + detalles);
+			
+			// Mostrar el record detalles en la consola
+			LOG.info("Detalle recuperado: " + detalles);
+			
 			
 		} catch (Exception e) {
-			LOG.severe("Error recuperando detalles en la capa de servicio" + e.getMessage());
+			LOG.severe("Error recuperando detalles en la capa de servicios");
 		}
+		
 		return detalles;
-
 	}
-	
+
+	@Override
+	public EmpleadoUpdate getEmpleadoById(int idEmpleado) {
+		
+		EmpleadoUpdate empleadoUpdate = null;
+		
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
+			
+			ResultSet rs = dbConexion.getEmpleadoById(idEmpleado, connection);
+			
+			int idEmp = 0;
+			String nombreEmpleado = null;
+			String primerApellido = null;
+			String segundoApellido = null;
+			LocalDate fechaAlta = null;
+			Genero genero = null;
+			BigDecimal salario = new BigDecimal(0);
+			int idDpto = 0;
+			String nombreDpto = null;
+			
+			Set<String> numerosTelefono = new HashSet<String>();
+			Set<String> emails = new HashSet<String>();
+			
+			if (rs.next()) {
+				idEmp = rs.getInt("idEmpleado");
+				nombreEmpleado = rs.getString("nombreEmpleado");
+				primerApellido = rs.getString("primerApellido");
+				segundoApellido = rs.getString("segundoApellido");
+				fechaAlta = rs.getDate("fechaAlta").toLocalDate();
+				genero = Genero.valueOf(rs.getString("genero"));
+				salario =  new BigDecimal(rs.getDouble("salario"));
+				idDpto = rs.getInt("idDpto");
+				nombreDpto = rs.getString("nombreDpto");
+			}
+			
+			rs.beforeFirst();
+			
+			while (rs.next()) {
+				numerosTelefono.add(rs.getString("numero"));
+			}
+			
+			rs.beforeFirst();
+			
+			while (rs.next()) {
+				emails.add(rs.getString("email"));
+			}
+			
+			empleadoUpdate = new EmpleadoUpdate(idEmp, nombreEmpleado,
+					primerApellido, segundoApellido, fechaAlta, genero, salario, 
+					idDpto, nombreDpto, numerosTelefono, emails);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+			LOG.severe("Error recuperando empleado por id en "
+					+ "la capa de servicios " + e.getMessage());
+			e.printStackTrace();
+		}
+		
+		return empleadoUpdate;
+	}
+
+	@Override
+	public void updateEmpleado(Empleado empleado, List<String> emails, List<String> telefonos) {
+		// TODO Auto-generated method stub
+		try (DBConexion dbConexion = new DBConexion("root", "Temp2026");
+				Connection connection = dbConexion.getConexion()) {
+			dbConexion.updateEmpleado(empleado, emails, telefonos, connection);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+
 }
-	
+
+
+
+
+
+
+
+
+
 
 

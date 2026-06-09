@@ -87,6 +87,7 @@
                 <th>Genero</th>
                 <th>Salario</th>
                 <th></th>
+                <th></th>
             </tr>
 		
 		</thead>
@@ -102,6 +103,7 @@
                     <td><%= empleado.genero() %></td>
                     <td><%= empleado.salario().setScale(2, RoundingMode.HALF_UP ) %></td>
                     <td> <a href="DetallesController?idEmpleado=<%=empleado.id() %>"> Detalles </a> </td>
+                    <td> <a href="UpdateController?idEmpleado=<%=empleado.id() %>"> Modificar </a> </td>
                 </tr>
                <%
 			 }
